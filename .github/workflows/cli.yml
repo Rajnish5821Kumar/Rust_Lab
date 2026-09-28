@@ -4,6 +4,7 @@ on:
   push:
     branches: [main]
     paths: ["cli/**", ".github/workflows/cli.yml"]
+  workflow_dispatch:
   pull_request:
     paths: ["cli/**", ".github/workflows/cli.yml"]
 
