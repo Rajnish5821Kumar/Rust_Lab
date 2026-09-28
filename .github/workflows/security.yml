@@ -23,7 +23,9 @@ jobs:
         with:
           python-version: "3.13"
       - run: pip install pip-audit
-      - run: pip install ./${{ matrix.package }}
+      # Editable install so --skip-editable excludes our own (unpublished) package
+      # and only third-party dependencies are audited.
+      - run: pip install -e ./${{ matrix.package }}
       - name: pip-audit
         run: pip-audit --skip-editable
 
