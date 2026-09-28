@@ -39,3 +39,19 @@ def test_jwt_secret_is_not_exposed_in_repr() -> None:
     settings = make_settings(jwt_secret="super-secret-value-that-is-long-enough")
 
     assert "super-secret-value" not in repr(settings)
+
+
+@pytest.mark.parametrize(
+    ("given", "expected"),
+    [
+        (
+            "postgres://u:p%40ss@ep-x.neon.tech/db?sslmode=require&channel_binding=require",
+            "postgresql+asyncpg://u:p%40ss@ep-x.neon.tech/db?ssl=require",
+        ),
+        ("postgresql://u:p@host:5432/db", "postgresql+asyncpg://u:p@host:5432/db"),
+        ("postgresql+asyncpg://u:p@host/db", "postgresql+asyncpg://u:p@host/db"),
+        ("sqlite+aiosqlite:///:memory:", "sqlite+aiosqlite:///:memory:"),
+    ],
+)
+def test_database_url_is_adapted_for_asyncpg(given: str, expected: str) -> None:
+    assert make_settings(database_url=given).database_url == expected

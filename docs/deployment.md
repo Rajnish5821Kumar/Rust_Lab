@@ -32,6 +32,39 @@ Optional settings: `ACCESS_TOKEN_EXPIRE_MINUTES`, `REFRESH_TOKEN_EXPIRE_DAYS`,
 3. Start one or more workers.
 4. Point liveness probes at `/api/health` and readiness probes at `/api/health/ready`.
 
+## Vercel (current hosted deployment)
+
+The dashboard and API are deployed together on Vercel:
+
+- `vercel.json` builds `frontend/` as static files and routes `/api/*` to a Python
+  serverless function (`api/index.py`) that serves the FastAPI app.
+- `requirements.txt` at the repository root lists the function's runtime dependencies
+  (no Celery, uvicorn or Alembic).
+- PostgreSQL is provided by **Neon** and Redis by **Upstash**, both through the Vercel
+  Marketplace. Their variables are prefixed `NEON_` / `UPSTASH_`.
+
+Production environment variables:
+
+| Variable | Value |
+| --- | --- |
+| `DATABASE_URL` | Neon's **unpooled** URL (asyncpg's prepared statements don't mix with pgbouncer). `postgres://` and `sslmode=` are adapted automatically |
+| `DATABASE_NULL_POOL` | `true`, so no pooled connections are kept between serverless invocations |
+| `REDIS_URL` | Upstash `rediss://` URL |
+| `JWT_SECRET` | Random, at least 32 characters (sensitive) |
+| `ENVIRONMENT` | `production` |
+
+Pushing to `main` deploys automatically. Run migrations from a trusted machine before
+deploying schema changes:
+
+```bash
+cd backend
+DATABASE_URL="<neon unpooled url>" JWT_SECRET="<any 32+ chars>" alembic upgrade head
+```
+
+Limitations on Vercel: the Celery worker does not run there. When background jobs arrive
+(Phase 2), the worker will need a container host, or the jobs will need to move to a
+serverless queue.
+
 ## Not yet done
 
 - Rate limiting on authentication endpoints (planned for Phase 7).

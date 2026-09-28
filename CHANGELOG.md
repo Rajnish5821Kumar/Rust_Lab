@@ -24,3 +24,7 @@ All notable changes to this project are documented here. The format follows
 - Docker images for the API/worker and frontend; `docker-compose.yml` for the full stack.
 - GitHub Actions for backend, frontend, CLI, security scanning and Docker builds.
 - Project documentation and architecture decision records.
+- Vercel deployment: static dashboard plus FastAPI as a Python serverless function,
+  with Neon PostgreSQL and Upstash Redis. `DATABASE_URL` now accepts provider-style
+  `postgres://…?sslmode=` URLs, `DATABASE_NULL_POOL` disables connection pooling, and
+  Redis clients are request-scoped.

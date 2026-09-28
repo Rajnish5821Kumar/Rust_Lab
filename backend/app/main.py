@@ -9,7 +9,6 @@ from app.api.errors import register_exception_handlers
 from app.api.router import api_router
 from app.core.config import Settings, get_settings
 from app.core.logging import configure_logging
-from app.core.redis import get_redis
 from app.db.session import get_engine
 from app.middleware.request_context import REQUEST_ID_HEADER, RequestContextMiddleware
 
@@ -18,7 +17,6 @@ from app.middleware.request_context import REQUEST_ID_HEADER, RequestContextMidd
 async def lifespan(_: FastAPI) -> AsyncIterator[None]:
     yield
     await get_engine().dispose()
-    await get_redis().aclose()
 
 
 def create_app(settings: Settings | None = None) -> FastAPI:

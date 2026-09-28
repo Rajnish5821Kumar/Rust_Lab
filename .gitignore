@@ -30,3 +30,13 @@ Thumbs.db
 
 # DevVault CLI local config
 .devvault.toml
+
+# Vercel
+.vercel
+.env*
+!.env.example
+
+# Agent skill files installed by the Vercel CLI (not part of the project)
+.agents/
+.claude/
+skills-lock.json

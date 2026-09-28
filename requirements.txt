@@ -1,0 +1,12 @@
+# Runtime dependencies for the Vercel serverless API function (api/index.py).
+# Keep in sync with backend/pyproject.toml. Celery, uvicorn and Alembic are omitted:
+# the function neither runs workers nor migrations.
+fastapi>=0.115
+sqlalchemy[asyncio]>=2.0.30
+asyncpg>=0.30
+pydantic>=2.7
+pydantic-settings>=2.7
+email-validator>=2.1
+pyjwt>=2.8
+argon2-cffi>=23.1
+redis>=5.0
